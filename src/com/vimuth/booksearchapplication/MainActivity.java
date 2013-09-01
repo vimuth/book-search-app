@@ -1,14 +1,15 @@
-package vimuth.booksearchapplication;
+package com.vimuth.booksearchapplication;
 
-import android.os.Bundle;
+import com.vimuth.booksearchapplication.R;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_main);
 	}
 

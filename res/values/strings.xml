@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Book Search Application</string>
+    <string name="app_name">Book Search</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="main_title">Welcome</string>
+    <string name="main_button">Camera</string>
+    <string name="blank_string"></string>
 
 </resources>

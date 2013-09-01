@@ -8,8 +8,11 @@ import java.io.OutputStream;
 
 import android.app.Application;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
+
+import com.googlecode.tesseract.android.TessBaseAPI;
 
 public class BookSearchApp extends Application{
 	
@@ -73,6 +76,19 @@ public class BookSearchApp extends Application{
 		
 	}
 	
-	
+	public static String scanPhoto(Bitmap bitmap){
+		TessBaseAPI baseApi = new TessBaseAPI();
+		baseApi.setDebug(true);
+		baseApi.init(DATA_PATH, lang);
+		baseApi.setImage(bitmap);
+		
+		String recognizedText = baseApi.getUTF8Text();
+		
+		baseApi.end();
+		
+		Log.d(TAG, recognizedText);
+		
+		return recognizedText;
+	}
 
 }

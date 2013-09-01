@@ -19,7 +19,7 @@ local.properties
 .classpath
 .project
 
-#OS files
+# OS files
 .DS_Store
 .AppleDouble
 .LSOverride

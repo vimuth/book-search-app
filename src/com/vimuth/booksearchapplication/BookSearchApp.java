@@ -6,32 +6,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-
 import android.app.Application;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Environment;
 import android.util.Log;
 
+import com.googlecode.tesseract.android.ResultIterator;
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel;
 
 public class BookSearchApp extends Application {
 	
-	static {
-	    if (!OpenCVLoader.initDebug()) {
-	        // Handle initialization error
-	    }
-	}
-
 	public static final String PACKAGE_NAME = "com.vimuth.booksearchapplication";
 	public static final String DATA_PATH = Environment
 			.getExternalStorageDirectory().toString()
@@ -95,33 +83,56 @@ public class BookSearchApp extends Application {
 		}
 
 	}
+	
+	//public static 
 
 	public static String scanPhoto(Bitmap bitmap) {
 		TessBaseAPI baseApi = new TessBaseAPI();
 		baseApi.setDebug(true);
 		baseApi.init(DATA_PATH, lang);
 		baseApi.setVariable("tessedit_char_blacklist","':;,.?/\\}][{!@#$%^&*()-_=+~");
-		
-		/*
-		Pix thresholdedImage = Thresholder.fisherAdaptiveThreshold(ReadFile.readBitmap(bitmap), 48, 48, 0.1F, 2.5F);
-	    Log.e("OcrRecognizeAsyncTask", "thresholding completed. converting to bmp. size:" + bitmap.getWidth() + "x" + bitmap.getHeight());
-	    bitmap = WriteFile.writeBitmap(thresholdedImage);
-		*/
+		baseApi.setVariable("save_blob_choices", "T");
+		//baseApi.setPageSegMode(mode)
 		
 		baseApi.setImage(bitmap);
-
+		//baseApi.
+		
+		//baseApi.r
 		String recognizedText = baseApi.getUTF8Text();
-
+		final ResultIterator iterator = baseApi.getResultIterator();
+		String lastUTF8Text;
+		float lastConfidence;
+		int count = 0;
+		iterator.begin();
+		do {
+		    lastUTF8Text = iterator.getUTF8Text(PageIteratorLevel.RIL_WORD);
+		    lastConfidence = iterator.confidence(PageIteratorLevel.RIL_WORD);
+		    count++;
+		    if(lastConfidence>50){
+		    	 Log.d(TAG, String.format("%s => %.2f",lastUTF8Text,lastConfidence));
+		    }
+		   
+		} while (iterator.next(PageIteratorLevel.RIL_WORD));
+				
 		baseApi.end();
 
 		Log.d(TAG, recognizedText);
-
+		
 		return recognizedText;
 	}
 
 	public static String getText(String path) {
+		
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inSampleSize = 4;
 
-		Bitmap bitmap = correctOrientation(path);
+		try {
+
+			Bitmap temp_bitmap = BitmapFactory.decodeFile(path, options);
+			ExifInterface exif = new ExifInterface(path);
+		
+
+		Bitmap bitmap = ImageProcessor.correctOrientation(temp_bitmap,exif);
 
 		String recognizedText = BookSearchApp.scanPhoto(bitmap);
 
@@ -131,138 +142,12 @@ public class BookSearchApp extends Application {
 
 		recognizedText = recognizedText.trim();
 		return recognizedText;
-
-	}
-
-	public static Bitmap correctOrientation(String path) {
-
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inSampleSize = 4;
-
-		Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-
-		try {
-			ExifInterface exif = new ExifInterface(path);
-			int exifOrientation = exif.getAttributeInt(
-					ExifInterface.TAG_ORIENTATION,
-					ExifInterface.ORIENTATION_NORMAL);
-
-			Log.v(TAG, "Orient: " + exifOrientation);
-
-			int rotate = 0;
-
-			switch (exifOrientation) {
-			case ExifInterface.ORIENTATION_ROTATE_90:
-				rotate = 90;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_180:
-				rotate = 180;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_270:
-				rotate = 270;
-				break;
-			}
-
-			Log.v(TAG, "Rotation: " + rotate);
-
-			if (rotate != 0) {
-
-				// Getting width & height of the given image.
-				int w = bitmap.getWidth();
-				int h = bitmap.getHeight();
-
-				// Setting pre rotate
-				Matrix mtx = new Matrix();
-				mtx.preRotate(rotate);
-
-				// Rotating Bitmap
-				bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
-			}
-
-			// Convert to ARGB_8888, required by tess
-			bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
+		
 		} catch (IOException e) {
-			Log.e(TAG, "Couldn't correct orientation: " + e.toString());
+			Log.d(TAG,"Error reading from SD Card");
+			e.printStackTrace();
 		}
-
-		return bitmap;
-	}
-
-	public static Bitmap toGrayScale(Bitmap b) {
-		Mat tmp = new Mat (b.getWidth(), b.getHeight(), CvType.CV_8UC1);
-		Utils.bitmapToMat(b, tmp);
-		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_BGR2GRAY);
-		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-		
-		Bitmap temp_b = b.copy(Bitmap.Config.ARGB_8888, true);
-		Utils.matToBitmap(tmp, temp_b);
-		
-		Log.d(TAG,"==============Converted to gray scale===============");
-		
-		return temp_b;
+		return "";
 	}
 	
-	public static Bitmap adaptiveThreshold(Bitmap b) {
-		
-		Log.d(TAG,"==============Starting Thresholding===============");
-		
-		b = toGrayScale(b);
-		
-		Mat tmp = new Mat (b.getWidth(), b.getHeight(), CvType.CV_8UC1);
-		Utils.bitmapToMat(b, tmp);
-		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_BGR2GRAY);
-		Imgproc.adaptiveThreshold(tmp, tmp, 255.0, Imgproc.THRESH_BINARY, Imgproc.ADAPTIVE_THRESH_MEAN_C, 11,15);
-		
-		Bitmap temp_b = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-		
-		Log.d(TAG,"==============Finished Thresholding===============");
-		
-		Utils.matToBitmap(tmp, temp_b);
-		return temp_b;
-	}
-	
-	public static Bitmap createContrast(Bitmap src, double value) {
-	    // image size
-	    int width = src.getWidth();
-	    int height = src.getHeight();
-	    // create output bitmap
-	    Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
-	    // color information
-	    int A, R, G, B;
-	    int pixel;
-	    // get contrast value
-	    double contrast = Math.pow((100 + value) / 100, 2);
-	 
-	    // scan through all pixels
-	    for(int x = 0; x < width; ++x) {
-	        for(int y = 0; y < height; ++y) {
-	            // get pixel color
-	            pixel = src.getPixel(x, y);
-	            A = Color.alpha(pixel);
-	            // apply filter contrast for every channel R, G, B
-	            R = Color.red(pixel);
-	            R = (int)(((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-	            if(R < 0) { R = 0; }
-	            else if(R > 255) { R = 255; }
-	 
-	            G = Color.red(pixel);
-	            G = (int)(((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-	            if(G < 0) { G = 0; }
-	            else if(G > 255) { G = 255; }
-	 
-	            B = Color.red(pixel);
-	            B = (int)(((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-	            if(B < 0) { B = 0; }
-	            else if(B > 255) { B = 255; }
-	 
-	            // set new pixel color to output bitmap
-	            bmOut.setPixel(x, y, Color.argb(A, R, G, B));
-	        }
-	    }
-	 
-	    // return final image
-	    return bmOut;
-	}
-
 }

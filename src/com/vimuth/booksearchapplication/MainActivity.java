@@ -4,7 +4,6 @@ import java.io.File;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -88,6 +87,7 @@ public class MainActivity extends Activity {
 	protected void onPhotoTaken() {
 		_taken = true;
 		Log.d(TAG, "photo taken");
+		
 		String recognizedText = BookSearchApp.getText(path);
 		
 		Log.v(TAG, "OCRED TEXT: " + recognizedText);
@@ -100,8 +100,8 @@ public class MainActivity extends Activity {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = 4;
 
-		Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+		//Bitmap bitmap = BitmapFactory.decodeFile(path, options);
 		
-		image_view.setImageBitmap(BookSearchApp.adaptiveThreshold(bitmap));
+		//image_view.setImageBitmap(BookSearchApp.adaptiveThreshold(bitmap));
 	}
 }

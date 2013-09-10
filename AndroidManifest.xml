@@ -27,6 +27,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+        android:name="com.vimuth.booksearchapplication.ResultActivity"
+        android:label="@string/resultpage_title"
+        android:parentActivityName="com.vimuth.booksearchapplication.MainActivity" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.vimuth.booksearchapplication.MainActivity" />
+    </activity>
+    
     </application>
 
 </manifest>

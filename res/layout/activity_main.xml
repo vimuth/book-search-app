@@ -30,25 +30,4 @@
         android:text="@string/main_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/result_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/camera_button"
-        android:layout_below="@+id/camera_button"
-        android:layout_marginTop="53dp"
-        android:ems="10"
-        android:hint="@string/blank_string" >
-
-        <requestFocus />
-    </EditText>
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/result_text"
-        android:layout_below="@+id/result_text"
-        android:layout_marginTop="41dp" />
-
 </RelativeLayout>

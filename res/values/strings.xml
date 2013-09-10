@@ -4,7 +4,9 @@
     <string name="app_name">Book Search</string>
     <string name="action_settings">Settings</string>
     <string name="main_title">Welcome</string>
-    <string name="main_button">Camera</string>
+    <string name="main_button">Scan</string>
     <string name="blank_string"></string>
+    <string name="resultpage_title">OCR Result</string>
+    <string name="resultpage_imagehint">Scanned photo</string>
 
 </resources>

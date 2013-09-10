@@ -4,21 +4,19 @@ import java.io.File;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 public class MainActivity extends Activity {
 	
-	protected EditText result_text;
-	protected ImageView image_view; 
 	static final String TAG = "MainActivity";
+	public final static String OCRRESULT = "com.vimuth.booksearcapplication.OCRRESULT";
+	public final static String SCANNEDPHOTO = "com.vimuth.booksearcapplication.SCANNEDPHOTO";	
+	
 	protected String path;
 	protected boolean _taken;
 	protected static final String PHOTO_TAKEN = "photo_taken";
@@ -28,9 +26,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_main);
 		
-		result_text = (EditText) findViewById(R.id.result_text);
-		image_view = (ImageView) findViewById(R.id.image);
-		//camera_button = (Button) findViewById(R.id.camera_button);
 		path = BookSearchApp.DATA_PATH + "/ocr.jpg";
 	}
 
@@ -90,18 +85,15 @@ public class MainActivity extends Activity {
 		
 		String recognizedText = BookSearchApp.getText(path);
 		
+		if(recognizedText.length() == 0){
+			recognizedText = "No Text Identified";
+		}
 		Log.v(TAG, "OCRED TEXT: " + recognizedText);
 
-		if ( recognizedText.length() != 0 ) {
-			result_text.setText(result_text.getText().toString().length() == 0 ? recognizedText : result_text.getText() + " " + recognizedText);
-			result_text.setSelection(result_text.getText().toString().length());
-		}
-		
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inSampleSize = 4;
-
-		//Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-		
-		//image_view.setImageBitmap(BookSearchApp.adaptiveThreshold(bitmap));
+		Intent intent = new Intent(this, ResultActivity.class);
+	    intent.putExtra(OCRRESULT, recognizedText);
+		intent.putExtra(SCANNEDPHOTO,path);
+	    startActivity(intent);
+	
 	}
 }

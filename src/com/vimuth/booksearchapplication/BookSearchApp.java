@@ -102,12 +102,10 @@ public class BookSearchApp extends Application {
 		final ResultIterator iterator = baseApi.getResultIterator();
 		String lastUTF8Text;
 		float lastConfidence;
-		int count = 0;
 		iterator.begin();
 		do {
 		    lastUTF8Text = iterator.getUTF8Text(PageIteratorLevel.RIL_WORD);
 		    lastConfidence = iterator.confidence(PageIteratorLevel.RIL_WORD);
-		    count++;
 		    if(lastConfidence>50){
 		    	 Log.d(TAG, String.format("%s => %.2f",lastUTF8Text,lastConfidence));
 		    }

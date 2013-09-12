@@ -25,7 +25,8 @@ public class ResultActivity extends Activity{
 		Intent intent = getIntent();
 		String recognizedText = intent.getStringExtra(MainActivity.OCRRESULT);
 		String path_photo = intent.getStringExtra(MainActivity.SCANNEDPHOTO);
-		Bitmap scannedImage = BitmapFactory.decodeFile(path_photo);
+		Bitmap temp = BitmapFactory.decodeFile(path_photo);
+		Bitmap scannedImage = ImageProcessor.optimizeBitmap(temp);
 		result_text = (TextView) findViewById(R.id.result);
 		result_image = (ImageView) findViewById(R.id.result_image);
 		

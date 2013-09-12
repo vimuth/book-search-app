@@ -92,12 +92,9 @@ public class BookSearchApp extends Application {
 		baseApi.init(DATA_PATH, lang);
 		baseApi.setVariable("tessedit_char_blacklist","':;,.?/\\}][{!@#$%^&*()-_=+~");
 		baseApi.setVariable("save_blob_choices", "T");
-		//baseApi.setPageSegMode(mode)
 		
 		baseApi.setImage(bitmap);
-		//baseApi.
 		
-		//baseApi.r
 		String recognizedText = baseApi.getUTF8Text();
 		final ResultIterator iterator = baseApi.getResultIterator();
 		String lastUTF8Text;

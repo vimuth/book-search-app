@@ -132,7 +132,7 @@ public class BookSearchApp extends Application {
 			Bitmap temp_bitmap = BitmapFactory.decodeFile(path, options);
 			ExifInterface exif = new ExifInterface(path);
 		
-		//corrct the orientation of the bitmap
+		//Correct the orientation of the bitmap
 		temp_bitmap = ImageProcessor.correctOrientation(temp_bitmap,exif);
 		Bitmap bitmap = ImageProcessor.optimizeBitmap(temp_bitmap);
 		

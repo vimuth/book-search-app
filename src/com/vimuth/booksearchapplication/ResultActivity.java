@@ -1,3 +1,8 @@
+/*
+ * Displays the results from OCR
+ * Currently only the result
+ */
+
 package com.vimuth.booksearchapplication;
 
 import android.app.Activity;
@@ -25,15 +30,13 @@ public class ResultActivity extends Activity{
 		Intent intent = getIntent();
 		String recognizedText = intent.getStringExtra(MainActivity.OCRRESULT);
 		String path_photo = intent.getStringExtra(MainActivity.SCANNEDPHOTO);
-		Bitmap temp = BitmapFactory.decodeFile(path_photo);
-		Bitmap scannedImage = ImageProcessor.optimizeBitmap(temp);
+		Bitmap scannedImage = BitmapFactory.decodeFile(path_photo);
+		
 		result_text = (TextView) findViewById(R.id.result);
 		result_image = (ImageView) findViewById(R.id.result_image);
 		
 		result_text.setText(recognizedText);
 		result_image.setImageBitmap(scannedImage);
-		//result_text.setSelection(result_text.getText().toString().length());
-		
 	}
 
 	@Override

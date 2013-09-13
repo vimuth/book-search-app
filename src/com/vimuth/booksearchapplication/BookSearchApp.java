@@ -1,3 +1,8 @@
+/*
+ * This class contains the main logic of the application
+ * It contains methods for ocr and retrieving results from APIs and the book lists
+ */
+
 package com.vimuth.booksearchapplication;
 
 import java.io.File;
@@ -24,7 +29,6 @@ public class BookSearchApp extends Application {
 	public static final String DATA_PATH = Environment
 			.getExternalStorageDirectory().toString()
 			+ "/BookSearchApplication/";
-
 	public static final String lang = "eng";
 
 	private static final String TAG = "BookSearchApp";
@@ -50,7 +54,7 @@ public class BookSearchApp extends Application {
 			}
 		}
 
-		// copying the trained data to the SD card
+		// copying the trained data for OCR to the SD card if it is not already there
 		if (!(new File(DATA_PATH + "tessdata/" + lang + ".traineddata"))
 				.exists()) {
 			try {
@@ -61,7 +65,7 @@ public class BookSearchApp extends Application {
 				OutputStream out = new FileOutputStream(DATA_PATH + "tessdata/"
 						+ lang + ".traineddata");
 
-				// Transfer bytes from in to out
+				//Transferring from assets to the SD
 				byte[] buf = new byte[1024];
 				int len;
 
@@ -69,7 +73,6 @@ public class BookSearchApp extends Application {
 					out.write(buf, 0, len);
 				}
 				in.close();
-
 				out.close();
 
 				Log.v(TAG, "Copied " + lang + " traineddata");
@@ -84,18 +87,21 @@ public class BookSearchApp extends Application {
 
 	}
 	
-	//public static 
-
+	//Scan the photo for text using the tess-two API
 	public static String scanPhoto(Bitmap bitmap) {
+		
 		TessBaseAPI baseApi = new TessBaseAPI();
 		baseApi.setDebug(true);
 		baseApi.init(DATA_PATH, lang);
+		//set the black list 
 		baseApi.setVariable("tessedit_char_blacklist","':;,.?/\\}][{!@#$%^&*()-_=+~");
 		baseApi.setVariable("save_blob_choices", "T");
 		
 		baseApi.setImage(bitmap);
 		
 		String recognizedText = baseApi.getUTF8Text();
+		
+		//Iterate over the results and print confidence values for debugging purposes
 		final ResultIterator iterator = baseApi.getResultIterator();
 		String lastUTF8Text;
 		float lastConfidence;
@@ -115,30 +121,33 @@ public class BookSearchApp extends Application {
 		
 		return recognizedText;
 	}
-
+	
+	//Used to get text in a image store at the location specified by the path
 	public static String getText(String path) {
-		
+		//read a low quality image to save memory
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = 4;
-
 		try {
 
 			Bitmap temp_bitmap = BitmapFactory.decodeFile(path, options);
 			ExifInterface exif = new ExifInterface(path);
 		
-
-		Bitmap bitmap = ImageProcessor.correctOrientation(temp_bitmap,exif);
-
+		//corrct the orientation of the bitmap
+		temp_bitmap = ImageProcessor.correctOrientation(temp_bitmap,exif);
+		Bitmap bitmap = ImageProcessor.optimizeBitmap(temp_bitmap);
+		
 		String recognizedText = BookSearchApp.scanPhoto(bitmap);
 
+		//remove some wrong results
 		if (BookSearchApp.lang.equalsIgnoreCase("eng")) {
-			recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", " ");
+			recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", "");
 		}
 
 		recognizedText = recognizedText.trim();
 		return recognizedText;
 		
 		} catch (IOException e) {
+			//if there is a error with the SD card
 			Log.d(TAG,"Error reading from SD Card");
 			e.printStackTrace();
 		}

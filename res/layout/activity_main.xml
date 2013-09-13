@@ -11,7 +11,7 @@
 
     <Button
         android:id="@+id/camera_button"
-        android:onClick="onClick"
+        android:onClick="onClickScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/title_text"

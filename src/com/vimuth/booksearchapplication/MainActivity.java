@@ -1,3 +1,8 @@
+/*
+ * The welcome screen displayed when a user open the app
+ * Include methods to access other features
+ */
+
 package com.vimuth.booksearchapplication;
 
 import java.io.File;
@@ -36,11 +41,13 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void onClick(View view) {
+	//when the scan button is clicked launch the android system camera app
+	public void onClickScan(View view) {
 		Log.v(TAG, "Starting Camera app");
 		startCameraActivity();
 	}
 	
+	//start the camera
 	protected void startCameraActivity() {
 		
 		File file = new File(path);
@@ -52,6 +59,7 @@ public class MainActivity extends Activity {
 		startActivityForResult(intent, 0);
 	}
 	
+	//after the camera exit if a photo is taken run onPhotoTaken 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "resultCode: " + resultCode);
@@ -79,6 +87,7 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	//if a photo is taken scan the photo for text and start the result activity
 	protected void onPhotoTaken() {
 		_taken = true;
 		Log.d(TAG, "photo taken");
@@ -91,6 +100,7 @@ public class MainActivity extends Activity {
 		Log.v(TAG, "OCRED TEXT: " + recognizedText);
 
 		Intent intent = new Intent(this, ResultActivity.class);
+		
 	    intent.putExtra(OCRRESULT, recognizedText);
 		intent.putExtra(SCANNEDPHOTO,path);
 	    startActivity(intent);

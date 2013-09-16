@@ -8,5 +8,11 @@
     <string name="blank_string"></string>
     <string name="resultpage_title">OCR Result</string>
     <string name="resultpage_imagehint">Scanned photo</string>
+    <string name="button_search">Search</string>
+    <string name="search_name_hint">Enter name of the book</string>
+    <string name="seach_activity_title">Search books</string>
+    <string name="bookview_activity_title">Book</string>
+    <string name="bookcover">Cover</string>
+    <string name="booklist_loadmore">"Load more "</string>
 
 </resources>

@@ -30,6 +30,8 @@ public class BookSearchApp extends Application {
 			.getExternalStorageDirectory().toString()
 			+ "/BookSearchApplication/";
 	public static final String lang = "eng";
+	
+	public static final String appkey = "AIzaSyAv0cRQMN4uLPEffi2n_8rr7OGjHvBtrfk";
 
 	private static final String TAG = "BookSearchApp";
 

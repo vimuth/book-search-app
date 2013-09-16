@@ -30,4 +30,13 @@
         android:text="@string/main_title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <Button
+        android:id="@+id/button_search_name"
+        android:onClick="onClickSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/camera_button"
+        android:layout_below="@+id/camera_button"
+        android:text="@string/button_search" />
+
 </RelativeLayout>

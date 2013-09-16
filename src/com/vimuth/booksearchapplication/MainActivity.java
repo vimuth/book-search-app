@@ -17,20 +17,20 @@ import android.view.Menu;
 import android.view.View;
 
 public class MainActivity extends Activity {
-	
+
 	static final String TAG = "MainActivity";
 	public final static String OCRRESULT = "com.vimuth.booksearcapplication.OCRRESULT";
-	public final static String SCANNEDPHOTO = "com.vimuth.booksearcapplication.SCANNEDPHOTO";	
-	
+	public final static String SCANNEDPHOTO = "com.vimuth.booksearcapplication.SCANNEDPHOTO";
+
 	protected String path;
 	protected boolean _taken;
 	protected static final String PHOTO_TAKEN = "photo_taken";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);		
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		path = BookSearchApp.DATA_PATH + "/ocr.jpg";
 	}
 
@@ -41,15 +41,22 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	//when the scan button is clicked launch the android system camera app
+	// when the scan button is clicked launch the android system camera app
 	public void onClickScan(View view) {
 		Log.v(TAG, "Starting Camera app");
 		startCameraActivity();
 	}
-	
-	//start the camera
+
+	// when search button is pressed
+	public void onClickSearch(View view) {
+		Log.d(TAG, "Button Clicked");
+		Intent intent = new Intent(this, SearchActivity.class);
+		startActivity(intent);
+	}
+
+	// start the camera
 	protected void startCameraActivity() {
-		
+
 		File file = new File(path);
 		Uri outputFileUri = Uri.fromFile(file);
 
@@ -58,8 +65,8 @@ public class MainActivity extends Activity {
 
 		startActivityForResult(intent, 0);
 	}
-	
-	//after the camera exit if a photo is taken run onPhotoTaken 
+
+	// after the camera exit if a photo is taken run onPhotoTaken
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "resultCode: " + resultCode);
@@ -71,7 +78,7 @@ public class MainActivity extends Activity {
 			Log.v(TAG, "User cancelled");
 		}
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		Log.d(TAG, "onSaveInstanceState");
@@ -86,24 +93,24 @@ public class MainActivity extends Activity {
 			onPhotoTaken();
 		}
 	}
-	
-	//if a photo is taken scan the photo for text and start the result activity
+
+	// if a photo is taken scan the photo for text and start the result activity
 	protected void onPhotoTaken() {
 		_taken = true;
 		Log.d(TAG, "photo taken");
-		
+
 		String recognizedText = BookSearchApp.getText(path);
-		
-		if(recognizedText.length() == 0){
+
+		if (recognizedText.length() == 0) {
 			recognizedText = "No Text Identified";
 		}
 		Log.v(TAG, "OCRED TEXT: " + recognizedText);
 
 		Intent intent = new Intent(this, ResultActivity.class);
-		
-	    intent.putExtra(OCRRESULT, recognizedText);
-		intent.putExtra(SCANNEDPHOTO,path);
-	    startActivity(intent);
-	
+
+		intent.putExtra(OCRRESULT, recognizedText);
+		intent.putExtra(SCANNEDPHOTO, path);
+		startActivity(intent);
+
 	}
 }

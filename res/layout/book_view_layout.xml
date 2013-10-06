@@ -10,6 +10,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fillViewport="true"
         android:orientation="vertical" >
 
         <ImageView
@@ -48,12 +49,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/bookview_author"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/bookview_cover"
             android:isIndicator="true"
             android:max="5"
             android:numStars="5"
-            android:paddingTop="5dp"
-            android:layout_marginLeft="5dp" />
+            android:paddingTop="5dp" />
 
         <TextView
             android:id="@+id/bookview_description"
@@ -62,12 +63,18 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@id/bookview_cover"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp" 
-            android:ellipsize="marquee"
-			android:maxLines="5"
-			android:clickable="true"
-			android:onClick="showFullDescription"/>
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:maxLines="5"
+            android:onClick="showFullDescription" />
 
+        <com.vimuth.booksearchapplication.MyWebView
+            android:id="@+id/webView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/bookview_description" />
     </RelativeLayout>
 
 </ScrollView>
